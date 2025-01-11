@@ -4,6 +4,7 @@ import { IonReactRouter } from "@ionic/react-router";
 
 /* Components */
 import HomeScreen from "./screen/HomeScreen";
+import LoginScreen from "./screen/LoginScreen";
 
 const AppRoutes = () => {
   return (
@@ -12,6 +13,9 @@ const AppRoutes = () => {
         {/* Home Routes */}
         <Route exact path="/">
           <HomeScreen />
+        </Route>
+        <Route exact path="/login">
+          <LoginScreen />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

@@ -5,7 +5,7 @@
 }
 
 body {
-  /* font-family: var(--textfont); */
+  font-family: var(--text-font);
   font-weight: 500;
   scroll-behavior: smooth;
   user-select: none;
@@ -18,6 +18,16 @@ a {
 a,
 a:hover {
   text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--head-font);
+  font-weight: 600;
 }
 
 /*==============

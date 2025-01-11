@@ -1,28 +1,33 @@
 export interface IInput {
   type: string;
   name: string;
-  id: string;
+  id?: string;
   class?: string;
-  placeholder?: string;
+  placeholder: string;
   autoComplete?: string;
   value?: string;
   autoFocus?: boolean;
-  required?: boolean;
+  required: boolean;
   disabled?: boolean;
   readOnly?: boolean;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export interface ILabelInput extends IInput {
+export interface ILabelInput extends Omit<IInput, "placeholder"> {
   labelName: string;
   labelClass?: string;
+  placeholder?: string;
 }
 
-export interface IconLabelInput extends ILabelInput {
+export interface IIconInput extends IInput {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   iconClass?: string;
-  moreInput?: React.ReactNode;
+}
+
+export interface IIconLabelInput extends ILabelInput {
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  iconClass?: string;
 }
 
 export interface ICheckbox extends ILabelInput {
@@ -40,7 +45,7 @@ export interface ITextarea extends ICheckbox {
 }
 
 export interface ISubmit {
-  id: string;
+  id?: string;
   class?: string;
   value?: string;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;

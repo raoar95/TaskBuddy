@@ -1,13 +1,34 @@
 import React from "react";
-import { Input } from "../components/Form/FormComponent";
+import { IonContent, IonPage } from "@ionic/react";
+
+/* Components */
+import {
+  IconInput,
+  IconLabelInput,
+  Input,
+  LabelInput,
+} from "../components/Form/FormComponent";
+
+/* Icons */
+import { IoMailOutline } from "react-icons/io5";
 
 const Home: React.FC = () => {
   return (
-    <div>
-      <h1>Home</h1>
+    <IonContent>
+      <div>
+        <h1>Home</h1>
 
-      <Input type="text" name="myInput" id="myInput" />
-    </div>
+        <LabelInput
+          // icon={IoMailOutline}
+          type="password"
+          name="myInput"
+          labelName="Email"
+          placeholder="Enter Email"
+          autoComplete="off"
+          required={true}
+        />
+      </div>
+    </IonContent>
   );
 };
 
