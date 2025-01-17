@@ -1,10 +1,9 @@
 export interface IInput {
   type: string;
-  name: string;
   id?: string;
+  name?: string;
   class?: string;
   placeholder: string;
-  autoComplete?: string;
   value?: string;
   autoFocus?: boolean;
   required: boolean;

@@ -47,8 +47,8 @@ const Input = (props: IInput) => {
         id={props.id || ""}
         className={`input ${props.class || ""}`}
         placeholder={props.placeholder || ""}
-        autoComplete={props.autoComplete || ""}
-        name={props.name || ""}
+        autoComplete={props.type === "password" ? "new-password" : "off"}
+        name={props.name ? props.name : "myInput"}
         onClick={props.onClick}
         onChange={props.onChange}
         value={props.value}
@@ -95,7 +95,7 @@ const LabelInput = (props: ILabelInput) => {
           id={props.id || ""}
           className={`input Label_input ${props.class || ""}`}
           placeholder={props.placeholder || ""}
-          autoComplete={props.autoComplete || ""}
+          autoComplete={props.type === "password" ? "new-password" : "off"}
           name={props.labelName || ""}
           onClick={props.onClick}
           onChange={props.onChange}
@@ -147,8 +147,8 @@ const IconLabelInput = (props: IIconLabelInput) => {
         }`}
         className={`icon_input ${props.class || "" || ""}`}
         placeholder={props.placeholder || ""}
-        autoComplete={props.autoComplete || ""}
-        name={props.labelName || ""}
+        autoComplete={props.type === "password" ? "new-password" : "off"}
+        name={props.labelName.toLowerCase().split(" ").join("-")}
         value={props.value}
         required={props.required}
         disabled={props.disabled}
@@ -198,8 +198,8 @@ const IconInput = (props: IIconInput) => {
         }`}
         className={`icon_input normal_icon_input ${props.class || ""}`}
         placeholder={props.placeholder || ""}
-        autoComplete={props.autoComplete || ""}
-        name={props.name || ""}
+        autoComplete={props.type === "password" ? "new-password" : "off"}
+        name={props.name ? props.name : "myInput"}
         value={props.value}
         required={props.required}
         disabled={props.disabled}
@@ -219,8 +219,8 @@ const Checkbox = (props: ICheckbox) => {
     <>
       <input
         type="checkbox"
-        id={props.id || ""}
-        name={props.name || ""}
+        id={props.id}
+        name={props.name ? props.name : "myCheckbox"}
         className={`input_checkbox ${props.class || ""}`}
         value={props.value}
         onClick={props.onClick}
@@ -231,7 +231,7 @@ const Checkbox = (props: ICheckbox) => {
         checked={props.checked}
       />
       <label
-        htmlFor={props.id || ""}
+        htmlFor={props.id}
         className={`input_label ${props.labelClass || ""}`}
         onClick={props.labelClickFunc}
       >
@@ -252,7 +252,7 @@ const Radio = (props: ICheckbox) => {
       <input
         type="radio"
         id={props.labelName || ""}
-        name={props.name || ""}
+        name={props.name ? props.name : "myInput"}
         className={`input_radio ${props.class || ""}`}
         required={props.required}
         disabled={props.disabled}
@@ -338,7 +338,7 @@ const Submit = (props: ISubmit) => {
       <input
         type="submit"
         id={props.id || ""}
-        className={`input_submit ${props.class || ""}`}
+        className={`myBtn input_submit ${props.class || ""}`}
         onClick={props.onClick}
         value={props.value}
       />

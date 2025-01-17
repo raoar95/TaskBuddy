@@ -4,6 +4,9 @@ import { IonContent } from "@ionic/react";
 /* Components */
 import AuthForm from "../components/LoginScreen/AuthForm";
 
+/* Styles */
+import "./LoginScreen.scss";
+
 const LoginScreen: React.FC = () => {
   return (
     <>

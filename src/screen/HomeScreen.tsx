@@ -11,22 +11,14 @@ import {
 
 /* Icons */
 import { IoMailOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {
   return (
     <IonContent>
       <div>
         <h1>Home</h1>
-
-        <LabelInput
-          // icon={IoMailOutline}
-          type="password"
-          name="myInput"
-          labelName="Email"
-          placeholder="Enter Email"
-          autoComplete="off"
-          required={true}
-        />
+        <Link to="/login">Go To Login Page</Link>
       </div>
     </IonContent>
   );
