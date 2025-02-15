@@ -13,11 +13,16 @@
 .input_wrapper {
   width: 95%;
   position: relative;
-  margin: 10px auto;
+  // margin: 10px auto;
+  margin: 10px 0;
 
   & .input {
     width: 100%;
     display: block;
+  }
+
+  & .label {
+    font-size: 18px;
   }
 
   & .eye_icon {

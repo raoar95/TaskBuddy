@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 
 /* Styles */
 import "./FormComponent.scss";
@@ -73,11 +73,10 @@ const LabelInput = (props: ILabelInput) => {
       <div className="input_wrapper label_input_wrapper">
         <label
           htmlFor={props.id || ""}
-          className={`input_label ${props.labelClass || ""}`}
+          className={`label input_label ${props.labelClass || ""}`}
         >
           {props.labelName || ""}
-        </label>{" "}
-        <br />
+        </label>
         {props.type === "password" && (
           <AiOutlineEye
             className="eye_icon"
@@ -114,17 +113,22 @@ const LabelInput = (props: ILabelInput) => {
 👉 Input With Label & Icon
 ==========================*/
 
-const IconLabelInput = (props: IIconLabelInput) => {
+const IconLabelInput = memo((props: IIconLabelInput) => {
   const [isInputEmpty, setIsInputEmpty] = useState(true);
-  const [showPassword, setShowPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleFocusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") {
-      setIsInputEmpty(true);
-    } else {
-      setIsInputEmpty(false);
-    }
-  };
+  const handleFocusChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.value === "") {
+        setIsInputEmpty(true);
+      } else {
+        setIsInputEmpty(false);
+      }
+    },
+    []
+  );
+
+  const labelName = props.labelName.toLowerCase().split(" ").join("-");
 
   return (
     <div className="icon_input_wrapper">
@@ -141,34 +145,34 @@ const IconLabelInput = (props: IIconLabelInput) => {
         type={`${
           props.type === "password"
             ? showPassword
-              ? "password"
-              : "text"
+              ? "text"
+              : "password"
             : props.type
         }`}
         className={`icon_input ${props.class || "" || ""}`}
+        id={props.id}
         placeholder={props.placeholder || ""}
         autoComplete={props.type === "password" ? "new-password" : "off"}
-        name={props.labelName.toLowerCase().split(" ").join("-")}
+        name={labelName}
         value={props.value}
         required={props.required}
         disabled={props.disabled}
         readOnly={props.readOnly}
+        onClick={props.onClick}
         onChange={(e) => {
           props.onChange && props.onChange(e);
           handleFocusChange(e);
         }}
       />
       <label
-        htmlFor={props.labelName || ""}
-        className={`input_label ${isInputEmpty ? "" : "top"} ${
-          props.labelClass || ""
-        }`}
+        htmlFor={labelName}
+        className={`input_label ${isInputEmpty ? "" : "top"}`}
       >
-        {props.labelName || ""}
+        {props.labelName}
       </label>
     </div>
   );
-};
+});
 
 /*=================
 👉 Input With Icon
@@ -204,6 +208,7 @@ const IconInput = (props: IIconInput) => {
         required={props.required}
         disabled={props.disabled}
         readOnly={props.readOnly}
+        onClick={props.onClick}
         onChange={props.onChange}
       />
     </div>
@@ -222,7 +227,7 @@ const Checkbox = (props: ICheckbox) => {
         id={props.id}
         name={props.name ? props.name : "myCheckbox"}
         className={`input_checkbox ${props.class || ""}`}
-        value={props.value}
+        value={props.labelName || ""}
         onClick={props.onClick}
         onChange={props.onChange}
         required={props.required}
@@ -235,7 +240,7 @@ const Checkbox = (props: ICheckbox) => {
         className={`input_label ${props.labelClass || ""}`}
         onClick={props.labelClickFunc}
       >
-        {props.value}
+        {props.labelName || ""}
       </label>
       <br />
     </>
@@ -275,7 +280,7 @@ const Radio = (props: ICheckbox) => {
 👉 Select
 =========*/
 
-const Select = (props: ISelect) => {
+const SingleSelect = (props: ISelect) => {
   return (
     <>
       <label
@@ -284,6 +289,7 @@ const Select = (props: ISelect) => {
       >
         {props.labelName || ""}
       </label>
+      <br />
       <select
         id="category"
         className={`input_select  ${props.class || ""}`}
@@ -291,6 +297,9 @@ const Select = (props: ISelect) => {
         required={props.required}
         disabled={props.disabled}
       >
+        <option value="" disabled selected hidden>
+          Select Options
+        </option>
         {props.options.map((option, index) => (
           <option key={index} value={option}>
             {option}
@@ -300,6 +309,8 @@ const Select = (props: ISelect) => {
     </>
   );
 };
+
+const MultiSelect = (props: ISelect) => {};
 
 /*==========
 👉 Textarea
@@ -314,6 +325,7 @@ const Textarea = (props: ITextarea) => {
       >
         {props.labelName || ""}
       </label>
+      <br />
       <textarea
         name={props.labelName || ""}
         className={`input_textarea  ${props.class || ""}`}
@@ -337,7 +349,7 @@ const Submit = (props: ISubmit) => {
     <>
       <input
         type="submit"
-        id={props.id || ""}
+        id={props.id}
         className={`myBtn input_submit ${props.class || ""}`}
         onClick={props.onClick}
         value={props.value}
@@ -355,7 +367,8 @@ export {
   IconInput,
   Checkbox,
   Radio,
-  Select,
+  SingleSelect,
+  MultiSelect,
   Textarea,
   Submit,
 };

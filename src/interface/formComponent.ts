@@ -1,4 +1,5 @@
 export interface IInput {
+  key?: number;
   type: string;
   id?: string;
   name?: string;
@@ -29,9 +30,13 @@ export interface IIconLabelInput extends ILabelInput {
   iconClass?: string;
 }
 
-export interface ICheckbox extends ILabelInput {
+export interface ICheckbox
+  extends Omit<ILabelInput, "type" | "placeholder" | "required"> {
   labelClickFunc?: (e: React.MouseEvent<HTMLLabelElement>) => void;
+  id: string;
+  required?: boolean;
   checked?: boolean;
+  placeholder?: string;
 }
 
 export interface ISelect extends ICheckbox {
