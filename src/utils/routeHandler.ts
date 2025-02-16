@@ -1,6 +1,6 @@
 // import React from "react";
 
-// import { Navigate, Route, useNavigate } from "react-router-dom";
+// import { Route } from "react-router-dom";
 
 // /** interface */
 // interface IRouteProps {
@@ -31,14 +31,7 @@
 // };
 
 // const UnProtectedRoute: React.FC<IRouteProps> = ({ element, path }) => {
-//   console.log("UnProtectedRoute", { element, path });
-
 //   return <Route path={path} element={element} />;
-// };
-
-// export const goToPage = (path: string) => {
-//   const navigate = useNavigate();
-//   navigate(path);
 // };
 
 // export { ProtectedRoute, UnProtectedRoute };

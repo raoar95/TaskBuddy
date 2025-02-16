@@ -1,10 +1,19 @@
-import React, { createContext, useContext, useState } from "react";
-import { IRegisterResponse, IUserData } from "../interface/user";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { IUserData } from "../interface/user";
+import { isUserAuth } from "../service/api";
+import { useHistory } from "react-router";
 
 /* Interface */
 export interface ITokens {
-  accessToken: string | null;
-  refreshToken: string | null;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface IErrorData {
@@ -20,75 +29,68 @@ export interface IApiErrorResponse {
 }
 
 export interface AuthContextType {
-  userData: IUserData | null;
-  setUserData: React.Dispatch<React.SetStateAction<IUserData | null>>;
-  token: ITokens | null;
-  setToken: React.Dispatch<React.SetStateAction<ITokens | null>>;
   isAuth: boolean;
   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
+  userData: IUserData | null;
+  setUserData: React.Dispatch<React.SetStateAction<IUserData | null>>;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  regResponseData: IRegisterResponse | null;
-  setRegResponseData: React.Dispatch<
-    React.SetStateAction<IRegisterResponse | null>
-  >;
-  loginError: IApiErrorResponse | null;
-  setLoginError: React.Dispatch<React.SetStateAction<IApiErrorResponse | null>>;
-  regError: IApiErrorResponse | null;
-  setRegError: React.Dispatch<React.SetStateAction<IApiErrorResponse | null>>;
 }
 
 // Initial State
 const defaultAuthContext: AuthContextType = {
-  userData: null,
-  setUserData: () => {},
-  token: null,
-  setToken: () => {},
   isAuth: false,
   setIsAuth: () => {},
+  userData: null,
+  setUserData: () => {},
   isLoading: false,
   setIsLoading: () => {},
-  regResponseData: null,
-  setRegResponseData: () => {},
-  loginError: null,
-  setLoginError: () => {},
-  regError: null,
-  setRegError: () => {},
 };
 
 export const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [userData, setUserData] = useState<IUserData | null>(null);
-  const [token, setToken] = useState<ITokens | null>(null);
   const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [userData, setUserData] = useState<IUserData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [regResponseData, setRegResponseData] =
-    useState<IRegisterResponse | null>(null);
-  const [loginError, setLoginError] = useState<IApiErrorResponse | null>(null);
-  const [regError, setRegError] = useState<IApiErrorResponse | null>(null);
+
+  const history = useHistory();
+
+  const getAuthState = useCallback(async () => {
+    await isUserAuth()
+      .then((data) => {
+        if (data.status === 200) {
+          setIsAuth(true);
+          setUserData(data.data);
+        }
+      })
+      .catch((err) => {
+        setIsAuth(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    getAuthState();
+  }, []);
+
+  useEffect(() => {
+    if (!isAuth) history.push("/login");
+  }, [isAuth]);
+
+  const contextValue = useMemo(
+    () => ({
+      isAuth,
+      setIsAuth,
+      userData,
+      setUserData,
+      isLoading,
+      setIsLoading,
+    }),
+    [isAuth, userData, isLoading]
+  );
 
   return (
-    <AuthContext.Provider
-      value={{
-        userData,
-        setUserData,
-        token,
-        setToken,
-        isAuth,
-        setIsAuth,
-        isLoading,
-        setIsLoading,
-        regResponseData,
-        setRegResponseData,
-        loginError,
-        setLoginError,
-        regError,
-        setRegError,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 

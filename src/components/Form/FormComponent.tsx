@@ -1,12 +1,13 @@
-import React from "react";
+import React, { memo, useState } from "react";
 
 /* Styles */
-import "./FormComponent.css";
+import "./FormComponent.scss";
 
 /* Interface */
 import type {
   ICheckbox,
-  IconLabelInput,
+  IIconLabelInput,
+  IIconInput,
   IInput,
   ILabelInput,
   ISelect,
@@ -14,131 +15,171 @@ import type {
   ITextarea,
 } from "../../interface/formComponent";
 
+/* Icons */
+import { AiOutlineEye } from "react-icons/ai";
+import BlinkLoader from "../Loader/Loader";
+
 // ================================================= Form Components Start =================================================
-
-/*=====================
-👉 Input Without Label
-======================*/
-
-const Input = (props: IInput) => {
-  return (
-    <input
-      type={props.type}
-      id={props.id}
-      className={`my_input ${props.class}`}
-      placeholder={props.placeholder}
-      autoComplete={props.autoComplete}
-      name={props.name}
-      onClick={props.onClick}
-      onChange={props.onChange}
-      value={props.value}
-      autoFocus={props.autoFocus}
-      required={props.required}
-      disabled={props.disabled}
-      readOnly={props.readOnly}
-    />
-  );
-};
 
 /*==================
 👉 Input With Label
 ===================*/
 
-const LabelInput = (props: ILabelInput) => {
+const MyInput = memo((props: ILabelInput) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <>
-      <label htmlFor={props.id} className={`input_label ${props.labelClass}`}>
-        {props.labelName}
-      </label>
-      <input
-        type={props.type}
-        id={props.id}
-        className={`Label_input ${props.class}`}
-        placeholder={props.placeholder}
-        autoComplete={props.autoComplete}
-        name={props.labelName}
-        onClick={props.onClick}
-        onChange={props.onChange}
-        value={props.value}
-        required={props.required}
-        disabled={props.disabled}
-        readOnly={props.readOnly}
-      />
-    </>
-  );
-};
+      <div className="input_wrapper label_input_wrapper">
+        {props.labelName && (
+          <label htmlFor={props.id} className="label input_label">
+            {props.labelName}
+          </label>
+        )}
 
-/*=========================
-👉 Input With Label & Icon
-==========================*/
+        {props.type === "password" && (
+          <AiOutlineEye
+            className="eye_icon"
+            onClick={() => setShowPassword(!showPassword)}
+          />
+        )}
 
-const IconLabelInput = (props: IconLabelInput) => {
-  return (
-    <div className="InputComp IconInputComp">
-      <label
-        htmlFor={props.labelName}
-        className={`input_label ${props.labelClass}`}
-      >
-        {props.labelName}
-      </label>
-      <div className="accInputCont">
-        <props.icon className={`input_icon ${props.iconClass}}`} />
         <input
-          className={`icon_label_input ${props.class}`}
-          type={props.type}
+          type={`${
+            props.type === "password"
+              ? showPassword
+                ? "text"
+                : "password"
+              : props.type
+          }`}
+          id={props.id}
+          className="input Label_input"
           placeholder={props.placeholder}
-          autoComplete={props.autoComplete}
           name={props.labelName}
+          onClick={props.onClick}
+          onChange={props.onChange}
           value={props.value}
+          autoComplete={props.type === "password" ? "new-password" : "off"}
           required={props.required}
           disabled={props.disabled}
           readOnly={props.readOnly}
         />
       </div>
-      {props.moreInput}
-    </div>
+      {props.error && <p className="error">{props.error}</p>}
+    </>
   );
-};
+});
 
 /*=================
 👉 Input With Icon
 ==================*/
 
-const IconInput = (props: IconLabelInput) => {
+const IconInput = memo((props: IIconInput) => {
+  const [showPassword, setShowPassword] = useState(true);
+
   return (
-    <div className="InputComp IconInputComp">
-      <div className="accInputCont">
-        <props.icon className={`input_icon ${props.iconClass}`} />
+    <>
+      <div className={`icon_input_wrapper ${props.class}`}>
+        <props.icon className="icon" />
+
+        {props.type === "password" && (
+          <AiOutlineEye
+            className="icon eye_icon"
+            onClick={() => setShowPassword(!showPassword)}
+          />
+        )}
+
         <input
-          className={`icon_input ${props.class}`}
-          type={props.type}
+          type={`${
+            props.type === "password"
+              ? showPassword
+                ? "password"
+                : "text"
+              : props.type
+          }`}
+          className="icon_input normal_icon_input"
           placeholder={props.placeholder}
-          autoComplete={props.autoComplete}
-          name={props.labelName}
+          name={props.name ? props.name : "myInput"}
           value={props.value}
+          autoComplete={props.type === "password" ? "new-password" : "off"}
           required={props.required}
           disabled={props.disabled}
           readOnly={props.readOnly}
+          onClick={props.onClick}
+          onChange={props.onChange}
         />
       </div>
-      {props.moreInput}
-    </div>
+      {props.error && <p className="error">{props.errorMsg}</p>}
+    </>
   );
-};
+});
+
+/*=========================
+👉 Input With Label & Icon
+==========================*/
+
+const IconLabelInput = memo((props: IIconLabelInput) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const labelName = props.labelName.toLowerCase().split(" ").join("-");
+
+  return (
+    <>
+      <div className={`icon_input_wrapper ${props.class}`}>
+        <props.icon className="icon" />
+
+        {props.type === "password" && (
+          <AiOutlineEye
+            className="icon eye_icon"
+            onClick={() => setShowPassword(!showPassword)}
+          />
+        )}
+
+        <input
+          type={`${
+            props.type === "password"
+              ? showPassword
+                ? "text"
+                : "password"
+              : props.type
+          }`}
+          className="icon_input"
+          id={props.id}
+          placeholder={props.placeholder}
+          name={labelName}
+          value={props.value}
+          autoComplete={props.type === "password" ? "new-password" : "off"}
+          required={props.required}
+          disabled={props.disabled}
+          readOnly={props.readOnly}
+          onClick={props.onClick}
+          onChange={props.onChange}
+        />
+        <label
+          htmlFor={labelName}
+          className={`input_label ${props.value ? "top" : ""}`}
+        >
+          {props.labelName}
+        </label>
+      </div>
+      {props.error && <p className="error">{props.errorMsg}</p>}
+    </>
+  );
+});
 
 /*==========
 👉 Checkbox
 ===========*/
 
-const Checkbox = (props: ICheckbox) => {
+const Checkbox = memo((props: ICheckbox) => {
   return (
     <>
       <input
         type="checkbox"
         id={props.id}
-        name={props.name}
+        name={props.name ? props.name : "myCheckbox"}
         className={`input_checkbox ${props.class}`}
-        value={props.value}
+        value={props.labelName}
         onClick={props.onClick}
         onChange={props.onChange}
         required={props.required}
@@ -151,24 +192,24 @@ const Checkbox = (props: ICheckbox) => {
         className={`input_label ${props.labelClass}`}
         onClick={props.labelClickFunc}
       >
-        {props.value}
+        {props.labelName}
       </label>
-      <br />
+      {props.error && <p className="error">{props.errorMsg}</p>}
     </>
   );
-};
+});
 
 /*=======
 👉 Radio
 ========*/
 
-const Radio = (props: ICheckbox) => {
+const Radio = memo((props: ICheckbox) => {
   return (
     <>
       <input
         type="radio"
         id={props.labelName}
-        name={props.name}
+        name={props.name ? props.name : "myInput"}
         className={`input_radio ${props.class}`}
         required={props.required}
         disabled={props.disabled}
@@ -182,16 +223,16 @@ const Radio = (props: ICheckbox) => {
       >
         {props.labelName}
       </label>
-      <br />
+      {props.error && <p className="error">{props.errorMsg}</p>}
     </>
   );
-};
+});
 
 /*========
 👉 Select
 =========*/
 
-const Select = (props: ISelect) => {
+const SingleSelect = memo((props: ISelect) => {
   return (
     <>
       <label
@@ -200,6 +241,7 @@ const Select = (props: ISelect) => {
       >
         {props.labelName}
       </label>
+      <br />
       <select
         id="category"
         className={`input_select  ${props.class}`}
@@ -207,15 +249,21 @@ const Select = (props: ISelect) => {
         required={props.required}
         disabled={props.disabled}
       >
+        <option value="" disabled selected hidden>
+          Select Options
+        </option>
         {props.options.map((option, index) => (
           <option key={index} value={option}>
             {option}
           </option>
         ))}
       </select>
+      {props.error && <p className="error">{props.errorMsg}</p>}
     </>
   );
-};
+});
+
+const MultiSelect = (props: ISelect) => {};
 
 /*==========
 👉 Textarea
@@ -230,6 +278,7 @@ const Textarea = (props: ITextarea) => {
       >
         {props.labelName}
       </label>
+      <br />
       <textarea
         name={props.labelName}
         className={`input_textarea  ${props.class}`}
@@ -240,6 +289,7 @@ const Textarea = (props: ITextarea) => {
         disabled={props.disabled}
         readOnly={props.readOnly}
       />
+      {props.error && <p className="error">{props.errorMsg}</p>}
     </>
   );
 };
@@ -248,30 +298,26 @@ const Textarea = (props: ITextarea) => {
 👉 Submit
 =========*/
 
-const Submit = (props: ISubmit) => {
+const Submit = memo((props: ISubmit) => {
+  console.log("loading", props.loading);
+
   return (
-    <>
-      <input
-        type="submit"
-        id={props.id}
-        className={`input_submit ${props.class}`}
-        onClick={props.onClick}
-        value={props.value}
-      />
-    </>
+    <button className="myBtn input_submit" onClick={props.onClick}>
+      {props.loading ? <BlinkLoader /> : "Submit"}
+    </button>
   );
-};
+});
 
 // =================================================== Form Components End ==================================================
 
 export {
-  Input,
-  LabelInput,
+  MyInput,
   IconLabelInput,
   IconInput,
   Checkbox,
   Radio,
-  Select,
+  SingleSelect,
+  MultiSelect,
   Textarea,
   Submit,
 };

@@ -2,7 +2,7 @@ import { ApiError } from "./errorHandler";
 import { ITokens } from "../context/authProvider.context";
 
 /* constant */
-import { SERVER_URL } from "../constant/constant";
+import { SERVER_URL, LOCAL_SERVER } from "../constant/constant";
 
 /** interface */
 export interface IFetchHandler {
@@ -14,7 +14,7 @@ export interface IFetchHandler {
 
 //=================================== fetchHandler start =======================================
 
-const fetchHandler = async ({
+const fetchHandler = ({
   endpoint,
   method,
   payload,
@@ -30,11 +30,11 @@ const fetchHandler = async ({
     headers["Authorization"] = `Bearer ${token.refreshToken}`;
   }
 
-  return await fetch(`${SERVER_URL}${endpoint}`, {
+  return fetch(`${LOCAL_SERVER}${endpoint}`, {
     method,
     body: payload ? JSON.stringify(payload) : undefined,
     headers,
-    // credentials: "include",     // For Sending cookies
+    credentials: "include",
   });
 };
 
@@ -46,7 +46,7 @@ const responseHandler = async (res: Response): Promise<any> => {
   const data = await res.json();
 
   if (!res.ok) {
-    throw new ApiError(res.status, `${data.errorMessage}`, data);
+    throw new ApiError(data.success, data.statusCode, data.errorMessage);
   }
 
   console.log("Response Data: ", data);

@@ -1,4 +1,4 @@
-import { IonApp, setupIonicReact } from "@ionic/react";
+import { IonApp } from "@ionic/react";
 
 /* Components */
 import AppRoutes from "./AppRoutes";
@@ -7,12 +7,12 @@ import AppRoutes from "./AppRoutes";
 import "./theme/variables.css";
 import "./theme/global.css";
 
-setupIonicReact();
-
-const App: React.FC = () => (
-  <IonApp>
-    <AppRoutes />
-  </IonApp>
-);
+const App: React.FC = () => {
+  return (
+    <IonApp>
+      <AppRoutes />
+    </IonApp>
+  );
+};
 
 export default App;
