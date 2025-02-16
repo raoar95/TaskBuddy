@@ -6,8 +6,9 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { IRegisterResponse, IUserData } from "../interface/user";
+import { IUserData } from "../interface/user";
 import { isUserAuth } from "../service/api";
+import { useHistory } from "react-router";
 
 /* Interface */
 export interface ITokens {
@@ -53,25 +54,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userData, setUserData] = useState<IUserData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const history = useHistory();
+
   const getAuthState = useCallback(async () => {
-    setIsLoading(true);
     await isUserAuth()
       .then((data) => {
         if (data.status === 200) {
           setIsAuth(true);
           setUserData(data.data);
-          setIsLoading(false);
         }
       })
       .catch((err) => {
         setIsAuth(false);
-        console.log("Api Error: ", err);
       });
   }, []);
 
   useEffect(() => {
     getAuthState();
   }, []);
+
+  useEffect(() => {
+    if (!isAuth) history.push("/login");
+  }, [isAuth]);
 
   const contextValue = useMemo(
     () => ({

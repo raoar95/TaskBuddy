@@ -6,8 +6,7 @@ import {
   Checkbox,
   IconInput,
   IconLabelInput,
-  Input,
-  LabelInput,
+  MyInput,
   Radio,
   SingleSelect,
   Textarea,
@@ -53,6 +52,20 @@ const Home: React.FC = () => {
       <div style={{ padding: "16px" }}>
         <h1>Home</h1>
         <Link to="/login">Go To Login Page</Link>
+
+        <br />
+        <br />
+
+        <MyInput
+          type="text"
+          labelName="Label"
+          placeholder="Input"
+          required={true}
+        />
+
+        <br />
+
+        {/* <MyInput type="text" placeholder="Input" required={true} /> */}
 
         <br />
         <br />

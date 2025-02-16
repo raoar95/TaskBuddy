@@ -12,10 +12,10 @@ const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <ToastContextProvider>
-        <App />
-      </ToastContextProvider>
-    </AuthProvider>
+    {/* <AuthProvider> */}
+    <ToastContextProvider>
+      <App />
+    </ToastContextProvider>
+    {/* </AuthProvider> */}
   </React.StrictMode>
 );

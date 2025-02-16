@@ -2,7 +2,7 @@ import React from "react";
 import { IonContent } from "@ionic/react";
 
 /* Components */
-import AuthForm from "../components/LoginScreen/AuthForm";
+import AuthForm from "../components/Form/AuthForm";
 
 /* Styles */
 import "./LoginScreen.scss";

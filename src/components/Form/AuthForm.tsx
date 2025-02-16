@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 /* Components */
-import { IconLabelInput, Submit } from "../Form/FormComponent";
-// import BlinkLoader from "../Loader/Loader";
+import { IconLabelInput, Submit } from "./FormComponent";
+import OtpInput from "./OtpInput";
 
 /* Hooks */
 import { useAuth } from "../../context/authProvider.context";
@@ -18,15 +18,6 @@ import {
   resetPassword,
 } from "../../service/api";
 
-/* Interface */
-interface IRouteParams {
-  resetToken: string;
-  otpID: string;
-}
-
-/* Components */
-import OtpInput from "../Form/OtpInput";
-
 /* Icons */
 import { FaRegUser } from "react-icons/fa";
 import { MdMailOutline } from "react-icons/md";
@@ -36,18 +27,24 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import "./AuthForm.scss";
 import { Link } from "react-router-dom";
 
+/* Interface */
+interface IRouteParams {
+  resetToken: string;
+  otpID: string;
+}
+
 const AuthForm: React.FC = () => {
   const [isActiveId, setIsActiveId] = useState("login");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cnfPassword, setCnfPassword] = useState("");
+
   const { toastSuccess, toastError } = useToast();
 
-  const history = useHistory();
+  const { setIsAuth, setUserData, isLoading, setIsLoading } = useAuth();
 
-  const { isAuth, setIsAuth, userData, setUserData, isLoading, setIsLoading } =
-    useAuth();
+  const history = useHistory();
 
   // get params
   const { resetToken, otpID } = useParams<IRouteParams>();
@@ -58,7 +55,7 @@ const AuthForm: React.FC = () => {
   }, [resetToken, otpID]);
 
   const handleSubmit = useCallback(
-    async (e: React.MouseEvent<HTMLInputElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       setIsLoading(true);
 
@@ -146,9 +143,9 @@ const AuthForm: React.FC = () => {
   const formDescription = {
     login: "Login to Access your Account",
     otpLogin: "Enter Email to Get OTP",
-    verifyOtp: "Enter OTP Received in Email to Verify",
+    verifyOtp: "Enter 6 Digit OTP Sent to your Email Id",
     register: "Sign Up to Create Account",
-    forgotEmailRequest: "Enter Email to Reset Password",
+    forgotEmailRequest: "Enter Email to Request Reset Mail",
     resetPassword: "Enter New Password",
   }[isActiveId];
 
@@ -211,7 +208,7 @@ const AuthForm: React.FC = () => {
                 />
               )}
 
-              <Submit onClick={(e) => handleSubmit(e)} />
+              <Submit onClick={(e) => handleSubmit(e)} loading={isLoading} />
               {/* <button
               type="submit"
               className="myBtn input_submit"

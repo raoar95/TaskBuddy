@@ -4,12 +4,18 @@ import { useHistory } from "react-router-dom";
 /* Components */
 import { Submit } from "./FormComponent";
 
+/* Services */
+import { verifyResetOtp } from "../../service/api";
+
+/* Hooks */
+import { useAuth } from "../../context/authProvider.context";
+import { useToast } from "../../context/toastProvider.context";
+
 /* Utils */
 import { generateRandomText } from "../../utils/RandomFunctions";
 
 /* Styles */
 import "./OtpInput.scss";
-import { verifyResetOtp } from "../../service/api";
 
 /* Interface */
 interface IOtpSubmit {
@@ -20,6 +26,10 @@ interface IOtpSubmit {
 const OtpInput = ({ size, otpId }: IOtpSubmit) => {
   const [otp, setOtp] = useState<string[]>(Array(size).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const { isLoading, setIsLoading } = useAuth();
+
+  const { toastError } = useToast();
 
   const history = useHistory();
 
@@ -45,41 +55,60 @@ const OtpInput = ({ size, otpId }: IOtpSubmit) => {
 
   const handleEraseOtp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-      if (e.key === "Backspace" && index > 0) {
+      const { key } = e;
+
+      if (key === "Backspace" && index > 0) {
         setOtp((prevOtp) => {
           const newOtp = [...prevOtp];
           newOtp[index] = "";
           return newOtp;
         });
 
-        inputRefs.current[index]?.value &&
-          (inputRefs.current[index].value = "");
+        inputRefs.current[index] && (inputRefs.current[index].value = "");
+        inputRefs.current[index - 1]?.focus();
+      }
+
+      if (key === "ArrowRight") {
+        inputRefs.current[index + 1]?.focus();
+      }
+
+      if (key === "ArrowLeft") {
         inputRefs.current[index - 1]?.focus();
       }
     },
     [otp]
   );
 
+  const handlePasteOtp = useCallback(
+    (e: React.ClipboardEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      const copiedOtp = e.clipboardData.getData("text");
+      const splitCopiedOtp = copiedOtp.split("");
+      splitCopiedOtp.forEach((digit, index) => {
+        inputRefs.current[index] && (inputRefs.current[index].value = digit);
+      });
+    },
+    [otp]
+  );
+
   const handleOtpSubmit = useCallback(
-    async (e: React.MouseEvent<HTMLInputElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       const invalidOtp = otp.includes("");
 
       if (invalidOtp) {
         e.preventDefault();
-        console.log("Please enter a valid OTP.");
+        toastError("Please Enter a Valid OTP.");
         return;
       }
-      e.preventDefault();
-      // console.log("OTP: ", otp.join(""));
+
+      setIsLoading(true);
 
       const inputOtp = otp.join("");
       const randomText = generateRandomText(90);
 
-      console.log("Input OTP: ", typeof inputOtp);
-
       if (otpId) {
         let isOtpVerified = await verifyResetOtp({ otp: inputOtp }).catch(
-          (err) => console.log(err)
+          (err) => toastError(err.errorMessage)
         );
 
         if (!isOtpVerified) return;
@@ -98,22 +127,17 @@ const OtpInput = ({ size, otpId }: IOtpSubmit) => {
         }
       }
 
-      // if (otpId === "reset") {
-      //   console.log("OTP ID: ", otpId);
-      //   history.push(`/reset-password/${generateRandomText(90)}`);
-      // }
-
-      // if (otpId === "otpLogin") {
-      //   console.log("OTP ID: ", otpId);
-      //   history.push("/");
-      // }
+      setIsLoading(false);
     },
     [otp]
   );
 
   return (
     <form method="post" className="otp_input_container">
-      <div className="otp_input_wrapper flex flex-space">
+      <div
+        className="otp_input_wrapper flex flex-space"
+        onPaste={(e) => handlePasteOtp(e)}
+      >
         {Array.from({ length: size }).map((_, index) => (
           <input
             ref={(el) => (inputRefs.current[index] = el)}
@@ -133,7 +157,7 @@ const OtpInput = ({ size, otpId }: IOtpSubmit) => {
           />
         ))}
       </div>
-      <Submit onClick={(e) => handleOtpSubmit(e)} />
+      <Submit onClick={(e) => handleOtpSubmit(e)} loading={isLoading} />
     </form>
   );
 };

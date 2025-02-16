@@ -10,6 +10,8 @@ export interface IInput {
   required: boolean;
   disabled?: boolean;
   readOnly?: boolean;
+  error?: boolean;
+  errorMsg?: string;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -52,5 +54,6 @@ export interface ISubmit {
   id?: string;
   class?: string;
   value?: string;
-  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  loading?: boolean;
 }
