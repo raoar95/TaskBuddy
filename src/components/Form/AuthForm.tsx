@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 /* Components */
 import { IconLabelInput, Submit } from "./FormComponent";
@@ -25,7 +26,6 @@ import { RiLockPasswordLine } from "react-icons/ri";
 
 /* Styles */
 import "./AuthForm.scss";
-import { Link } from "react-router-dom";
 
 /* Interface */
 interface IRouteParams {
